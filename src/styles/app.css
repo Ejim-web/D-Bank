@@ -1,59 +1,169 @@
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f3f4f6;
-}
+import { useState } from 'react';
 
-.app-container {
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-}
+export default function BankApp() {
+  const [balance, setBalance] = useState(458250);
+  const [showTransfer, setShowTransfer] = useState(false);
+  const [transferAmount, setTransferAmount] = useState('');
+  const [transferRecipient, setTransferRecipient] = useState('');
+  const [transactions, setTransactions] = useState([
+    { name: 'Electricity Bill', amount: -12500, date: 'Today', id: 1 },
+    { name: 'Salary Credit', amount: 250000, date: 'Yesterday', id: 2 },
+    { name: 'Airtime Top-up', amount: -2000, date: '2 days ago', id: 3 },
+    { name: 'Transfer to John', amount: -15000, date: '3 days ago', id: 4 },
+  ]);
 
-.bank-card {
-  width: 100%;
-  max-width: 420px;
-  background: white;
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
+  const actions = [
+    { name: 'Transfer', icon: '💸', action: () => setShowTransfer(true) },
+    { name: 'Airtime', icon: '📱', action: () => alert('Airtime purchase coming soon') },
+    { name: 'Bills', icon: '💡', action: () => alert('Bill payment coming soon') },
+    { name: 'Savings', icon: '🏦', action: () => alert('Savings feature coming soon') },
+    { name: 'Cards', icon: '💳', action: () => alert('Cards feature coming soon') },
+    { name: 'Loans', icon: '📈', action: () => alert('Loans feature coming soon') },
+  ];
 
-.header {
-  text-align: center;
-  background: green;
-  color: white;
-  padding: 20px;
-  border-radius: 15px;
-}
+  const handleTransfer = () => {
+    const amountNum = parseFloat(transferAmount);
+    if (isNaN(amountNum) || amountNum <= 0) {
+      alert('Please enter a valid amount');
+      return;
+    }
+    if (amountNum > balance) {
+      alert('Insufficient funds');
+      return;
+    }
+    if (!transferRecipient.trim()) {
+      alert('Please enter recipient name');
+      return;
+    }
 
-.balance-card {
-  background: #16a34a;
-  color: white;
-  padding: 20px;
-  margin: 20px 0;
-  border-radius: 15px;
-}
+    setBalance(balance - amountNum);
+    
+    const newTransaction = {
+      name: `Transfer to ${transferRecipient}`,
+      amount: -amountNum,
+      date: 'Today',
+      id: Date.now()
+    };
+    setTransactions([newTransaction, ...transactions]);
+    
+    setTransferAmount('');
+    setTransferRecipient('');
+    setShowTransfer(false);
+    alert(`₦${amountNum.toLocaleString()} sent to ${transferRecipient}`);
+  };
 
-.actions-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
+  return (
+    <div className="min-h-screen bg-gray-100 flex justify-center items-center p-4">
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <div className="bg-green-600 text-white p-6 rounded-b-3xl">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <p className="text-sm opacity-80">Welcome back</p>
+              <h1 className="text-2xl font-bold">Bruno Carter</h1>
+            </div>
+            <div className="text-3xl cursor-pointer">🔔</div>
+          </div>
 
-.actions-grid button {
-  padding: 15px;
-  border: none;
-  border-radius: 12px;
-  background: #f3f4f6;
-  cursor: pointer;
-}
+          <div className="bg-green-500 rounded-2xl p-5 shadow-lg">
+            <p className="text-sm opacity-80">Available Balance</p>
+            <h2 className="text-4xl font-bold mt-2">₦{balance.toLocaleString()}</h2>
+            <p className="mt-2 text-sm">Account No: 8123 4567 890</p>
+          </div>
+        </div>
 
-.transaction-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px;
-  background: #f9fafb;
-  border-radius: 12px;
-  margin-top: 10px;
+        <div className="p-5">
+          <h3 className="font-semibold text-lg mb-4">Quick Actions</h3>
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            {actions.map((action, idx) => (
+              <button
+                key={idx}
+                onClick={action.action}
+                className="flex flex-col items-center justify-center bg-gray-50 hover:bg-green-50 rounded-2xl p-4 shadow-sm transition"
+              >
+                <span className="text-2xl mb-2">{action.icon}</span>
+                <span className="text-sm font-medium">{action.name}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="font-semibold text-lg">Recent Transactions</h3>
+            <button className="text-green-600 text-sm font-medium">See All</button>
+          </div>
+
+          <div className="space-y-3">
+            {transactions.map((tx) => (
+              <div
+                key={tx.id}
+                className="flex justify-between items-center bg-gray-50 rounded-2xl p-4"
+              >
+                <div>
+                  <p className="font-medium">{tx.name}</p>
+                  <p className="text-sm text-gray-500">{tx.date}</p>
+                </div>
+                <p className={`font-semibold ${tx.amount > 0 ? 'text-green-600' : 'text-red-500'}`}>
+                  {tx.amount > 0 ? `+₦${tx.amount.toLocaleString()}` : `-₦${Math.abs(tx.amount).toLocaleString()}`}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="border-t bg-white p-4 flex justify-around text-gray-500">
+          <button className="flex flex-col items-center text-green-600 font-semibold">
+            <span>🏠</span>
+            <span className="text-xs">Home</span>
+          </button>
+          <button className="flex flex-col items-center">
+            <span>💳</span>
+            <span className="text-xs">Cards</span>
+          </button>
+          <button className="flex flex-col items-center">
+            <span>📊</span>
+            <span className="text-xs">Finance</span>
+          </button>
+          <button className="flex flex-col items-center">
+            <span>⚙️</span>
+            <span className="text-xs">Settings</span>
+          </button>
+        </div>
+      </div>
+
+      {showTransfer && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 z-50">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
+            <h3 className="text-xl font-bold mb-4">Send Money</h3>
+            <input
+              type="text"
+              placeholder="Recipient name"
+              value={transferRecipient}
+              onChange={(e) => setTransferRecipient(e.target.value)}
+              className="w-full p-3 border rounded-xl mb-3 focus:outline-none focus:border-green-500"
+            />
+            <input
+              type="number"
+              placeholder="Amount (₦)"
+              value={transferAmount}
+              onChange={(e) => setTransferAmount(e.target.value)}
+              className="w-full p-3 border rounded-xl mb-3 focus:outline-none focus:border-green-500"
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowTransfer(false)}
+                className="flex-1 py-3 bg-gray-200 rounded-xl font-semibold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleTransfer}
+                className="flex-1 py-3 bg-green-600 text-white rounded-xl font-semibold"
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
