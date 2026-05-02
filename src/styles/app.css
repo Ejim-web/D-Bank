@@ -1,1 +1,59 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f4f6;
+}
 
+.app-container {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.bank-card {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.header {
+  text-align: center;
+  background: green;
+  color: white;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.balance-card {
+  background: #16a34a;
+  color: white;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 15px;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.actions-grid button {
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  background: #f3f4f6;
+  cursor: pointer;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 12px;
+  margin-top: 10px;
+}
